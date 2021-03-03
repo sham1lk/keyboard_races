@@ -17,7 +17,7 @@ class TrainingWin(QWidget):
 	# constructor
 	def __init__(self):
 		super().__init__()
-		self.setGeometry(100, 100,800, 600)
+		self.setGeometry(100, 100, 800, 600)
 		self.setWindowTitle("New Game")
 		self.training_ui()
 
@@ -45,10 +45,18 @@ class TrainingWin(QWidget):
 
 		self.lbl = QLabel(self)
 		self.lbl.setGeometry(w2+160, 220, 140, 25)
+
+
 		
 		self.qle = QLineEdit(self)
 		self.qle.setGeometry(w2, 220, 140, 25)
 		self.qle.textChanged[str].connect(self.onChanged)
+
+		self.pbar = QProgressBar(self) 
+		self.pbar.setGeometry(150, 320, 500, 25)
+
+		self.plbl = QLabel(self)
+		self.plbl.setGeometry(150, 310, 500, 25)
 
 		self.show()
 
@@ -58,6 +66,11 @@ class TrainingWin(QWidget):
 			if text == (splitted[self.correct_words]+" "):
 				self.correct_words += 1
 				self.qle.clear()
+				
+				prcnt = int((self.correct_words/float(len(splitted))) * 100)
+				self.pbar.setValue(prcnt)
+				self.plbl.setText(str(prcnt) + "%")
+				self.plbl.adjustSize()
 
 			self.lbl.setText(str(self.correct_words))
 			self.lbl.adjustSize()
@@ -65,6 +78,7 @@ class TrainingWin(QWidget):
 			if self.correct_words == len(splitted):
 				self.lbl.setText("Congratulations")
 				self.lbl.adjustSize()
+
 
 	# def endTraining(self):
 	# 	pass
