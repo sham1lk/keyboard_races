@@ -34,8 +34,8 @@ class TrainingWin(QWidget):
 		self.sampleTxt.setAlignment(Qt.AlignCenter)
 		self.sampleTxt.setText(sample_text)
 		self.sampleTxt.adjustSize()
-		h1 = int(self.sampleTxt.height() * 1.2)
-		w1 = int(self.sampleTxt.width() * 1.1)
+		h1 = int(self.sampleTxt.height() * 1.6)
+		w1 = int(self.sampleTxt.width() * 1.3)
 		self.sampleTxt.resize(w1, h1)
 		self.sampleTxt.setStyleSheet("QLabel"
 									"{"
@@ -91,9 +91,9 @@ class TrainingWin(QWidget):
 				self.lbl.adjustSize()
 				self.end_time = time.perf_counter()
 				# self.started = False
-				pace = 60 * (len(splitted) / (self.end_time - self.start_time))
+				pace = 60 * ((len(sample_text) - sample_text.count(' ')) / (self.end_time - self.start_time))
 				pace = str(round(pace, 2))
-				self.pacelbl.setText(pace + " words/min")
+				self.pacelbl.setText(pace + " sym/min")
 				self.pacelbl.adjustSize()
 
 
