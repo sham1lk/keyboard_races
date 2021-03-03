@@ -22,6 +22,9 @@ class TrainingWin(QWidget):
 		self.training_ui()
 
 		self.correct_words = 0
+		self.started = False
+		self.start_time = 0.0;
+		self.end_time = 0.0;
 
 
 	def training_ui(self):
@@ -56,17 +59,25 @@ class TrainingWin(QWidget):
 		self.pbar.setGeometry(150, 320, 500, 25)
 
 		self.plbl = QLabel(self)
-		self.plbl.setGeometry(150, 310, 500, 25)
+		self.plbl.setGeometry(150, 310, 50, 25)
+
+		self.pacelbl = QLabel(self)
+		self.pacelbl.setGeometry(600, 310, 50, 25)
 
 		self.show()
 
 
 	def onChanged(self, text):
+		if not self.started:
+			self.start_time = time.perf_counter()
+			self.started = True
+
+
 		if self.correct_words != len(splitted):
 			if text == (splitted[self.correct_words]+" "):
 				self.correct_words += 1
 				self.qle.clear()
-				
+
 				prcnt = int((self.correct_words/float(len(splitted))) * 100)
 				self.pbar.setValue(prcnt)
 				self.plbl.setText(str(prcnt) + "%")
@@ -78,6 +89,12 @@ class TrainingWin(QWidget):
 			if self.correct_words == len(splitted):
 				self.lbl.setText("Congratulations")
 				self.lbl.adjustSize()
+				self.end_time = time.perf_counter()
+				# self.started = False
+				pace = 60 * (len(splitted) / (self.end_time - self.start_time))
+				pace = str(round(pace, 2))
+				self.pacelbl.setText(pace + " words/min")
+				self.pacelbl.adjustSize()
 
 
 	# def endTraining(self):
