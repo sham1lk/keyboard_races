@@ -9,8 +9,9 @@ import sys
 
 # create a Window class
 from helpers import get_ip, get_name
-from trainingWin import start_training
+from trainingWin import TrainingWin
 
+training_window = None
 
 class Window(QMainWindow):
     # constructor
@@ -86,7 +87,7 @@ class Window(QMainWindow):
 
     def trainingBtn(self):
         self.label.setText("Training")
-        # start_training()
+        self.w = TrainingWin()
 
 
     def hide_menu(self):
