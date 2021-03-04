@@ -11,12 +11,14 @@ import random
 # create a Window class
 from helpers import get_ip, get_name
 sample_text = []
-sample_text.append("In some natures there are no half-tones;\n nothing but raw primary colours. John Bodman\n was a man who was always at one extreme or the other")
-sample_text.append("When and where, it matters not now to\n relate--but once upon a time as I was\n passing through a thinly peopled district\n of country, night came down upon me, almost unawares.")
-sample_text.append("Some women had risen, in order to get\n nearer to him, and were standing with their\n eyes fastened on the clean-shaven face\n of the judge, who was saying such weighty things")
-sample_text.append("Conradin hated her with a desperate sincerity\n which he was perfectly able to mask.")
-sample_text.append("The man held a double-barrelled gun cocked in his\n hand, and screwed up his eyes in the direction\n of his lean old dog who was running on ahead sniffing the bushes")
+sample_text.append("In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other")
+sample_text.append("When and where, it matters not now to\nrelate--but once upon a time as I was\npassing through a thinly peopled district\nof country, night came down upon me, almost unawares.")
+sample_text.append("Some women had risen, in order to get\nnearer to him, and were standing with their\neyes fastened on the clean-shaven face\nof the judge, who was saying such weighty things")
+sample_text.append("Conradin hated her with a desperate sincerity\nwhich he was perfectly able to mask.")
+sample_text.append("The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bushes")
 idx = random.randint(0, len(sample_text)-1)
+stxtLen = len(sample_text[idx])
+stxtSpace = sample_text[idx].count(' ')
 splitted = sample_text[idx].split()
 wgtW = 800
 wgtH = 600
@@ -91,8 +93,10 @@ class TrainingWin(QWidget):
 
 		if self.correct_words != len(splitted):
 			if text == (splitted[self.correct_words]+" "):
-				self.correct_words += 1
 				self.qle.clear()
+				sample_text[idx] = sample_text[idx][len(splitted[self.correct_words])+1:]
+				self.sampleTxt.setText(sample_text[idx])
+				self.correct_words += 1
 
 				prcnt = int((self.correct_words/float(len(splitted))) * 100)
 				self.pbar.setValue(prcnt)
@@ -107,7 +111,7 @@ class TrainingWin(QWidget):
 				self.lbl.adjustSize()
 				self.end_time = time.perf_counter()
 
-				pace = 60 * ((len(sample_text[idx]) - sample_text[idx].count(' ')) / (self.end_time - self.start_time))
+				pace = 60 * ((stxtLen - stxtSpace) / (self.end_time - self.start_time))
 				pace = str(round(pace, 2))
 				self.pacelbl.setText(pace + " sym/min")
 				self.pacelbl.adjustSize()
