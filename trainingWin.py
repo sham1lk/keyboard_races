@@ -11,13 +11,14 @@ import sys
 from helpers import get_ip, get_name
 sample_text = "Hello motherfucker. Today I am gonna\n teach you a very important lesson.\n But first, let me take a selfie."
 splitted = sample_text.split()
-
+wgtW = 800
+wgtH = 600
 
 class TrainingWin(QWidget):
 	# constructor
 	def __init__(self):
 		super().__init__()
-		self.setGeometry(100, 100, 800, 600)
+		self.setGeometry(100, 100, wgtW, wgtH)
 		self.setWindowTitle("New Game")
 		self.training_ui()
 
@@ -36,7 +37,9 @@ class TrainingWin(QWidget):
 		self.sampleTxt.adjustSize()
 		h1 = int(self.sampleTxt.height() * 1.6)
 		w1 = int(self.sampleTxt.width() * 1.3)
-		self.sampleTxt.resize(w1, h1)
+		stx = (wgtW - w1)/2
+		sty = (wgtH - h1)/5
+		self.sampleTxt.setGeometry(stx, sty, w1, h1)
 		self.sampleTxt.setStyleSheet("QLabel"
 									"{"
 									"color : black;"
@@ -44,25 +47,32 @@ class TrainingWin(QWidget):
 									"background : white;"
 									"}")
 
-		w2 = int(285+(w1-140)/2)
+		qlw = 140
+		qlh = 25
+		w2 = int(stx+(w1-qlw)/2)
 
-		self.lbl = QLabel(self)
-		self.lbl.setGeometry(w2+160, 220, 140, 25)
-
-
-		
 		self.qle = QLineEdit(self)
-		self.qle.setGeometry(w2, 220, 140, 25)
+		self.qle.setGeometry(w2, sty+h1+25, qlw, qlh)
 		self.qle.textChanged[str].connect(self.onChanged)
 
-		self.pbar = QProgressBar(self) 
-		self.pbar.setGeometry(150, 320, 500, 25)
+		lbly = sty+h1+25
+		self.lbl = QLabel(self)
+		self.lbl.setText("0")
+		self.lbl.setGeometry(w2+qlw+20, lbly, 30, qlh)
 
+		pbrW = 500
+		pbrx = (wgtW-pbrW)/2
+		pbry = lbly + 120
+		self.pbar = QProgressBar(self) 
+		self.pbar.setGeometry(pbrx, pbry, pbrW, qlh)
+
+		plby = pbry - 15
 		self.plbl = QLabel(self)
-		self.plbl.setGeometry(150, 310, 50, 25)
+		self.plbl.setGeometry(pbrx+5, plby, 30, qlh)
+		self.plbl.setText("0%")
 
 		self.pacelbl = QLabel(self)
-		self.pacelbl.setGeometry(600, 310, 50, 25)
+		self.pacelbl.setGeometry(pbrx+pbrW-100, plby, 50, qlh)
 
 		self.show()
 
@@ -71,7 +81,6 @@ class TrainingWin(QWidget):
 		if not self.started:
 			self.start_time = time.perf_counter()
 			self.started = True
-
 
 		if self.correct_words != len(splitted):
 			if text == (splitted[self.correct_words]+" "):
@@ -90,7 +99,7 @@ class TrainingWin(QWidget):
 				self.lbl.setText("Congratulations")
 				self.lbl.adjustSize()
 				self.end_time = time.perf_counter()
-				# self.started = False
+
 				pace = 60 * ((len(sample_text) - sample_text.count(' ')) / (self.end_time - self.start_time))
 				pace = str(round(pace, 2))
 				self.pacelbl.setText(pace + " sym/min")
