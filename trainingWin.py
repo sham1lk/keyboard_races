@@ -20,6 +20,7 @@ idx = random.randint(0, len(sample_text)-1)
 stxtLen = len(sample_text[idx])
 stxtSpace = sample_text[idx].count(' ')
 splitted = sample_text[idx].split()
+
 wgtW = 800
 wgtH = 600
 
@@ -35,6 +36,7 @@ class TrainingWin(QWidget):
 		self.started = False
 		self.start_time = 0.0;
 		self.end_time = 0.0;
+		self.cwPtr = 0
 
 
 	def training_ui(self):
@@ -94,8 +96,14 @@ class TrainingWin(QWidget):
 		if self.correct_words != len(splitted):
 			if text == (splitted[self.correct_words]+" "):
 				self.qle.clear()
-				sample_text[idx] = sample_text[idx][len(splitted[self.correct_words])+1:]
-				self.sampleTxt.setText(sample_text[idx])
+
+				# cwPtr
+				tmp = '_'*len(splitted[self.correct_words])
+				tmp = sample_text[idx][:self.cwPtr] + tmp + sample_text[idx][self.cwPtr+len(tmp):]
+				# sample_text[idx] = sample_text[idx][len(splitted[self.correct_words])+1:]
+				# self.sampleTxt.setText(sample_text[idx])
+				self.sampleTxt.setText(tmp)
+				self.cwPtr += len(splitted[self.correct_words]) + 1
 				self.correct_words += 1
 
 				prcnt = int((self.correct_words/float(len(splitted))) * 100)
@@ -119,7 +127,6 @@ class TrainingWin(QWidget):
 
 	# def endTraining(self):
 	# 	pass
-
 
 
 # create pyqt5 app
