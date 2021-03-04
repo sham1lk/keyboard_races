@@ -6,11 +6,18 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 import sys
+import random
 
 # create a Window class
 from helpers import get_ip, get_name
-sample_text = "Hello motherfucker. Today I am gonna\n teach you a very important lesson.\n But first, let me take a selfie."
-splitted = sample_text.split()
+sample_text = []
+sample_text.append("In some natures there are no half-tones;\n nothing but raw primary colours. John Bodman\n was a man who was always at one extreme or the other")
+sample_text.append("When and where, it matters not now to\n relate--but once upon a time as I was\n passing through a thinly peopled district\n of country, night came down upon me, almost unawares.")
+sample_text.append("Some women had risen, in order to get\n nearer to him, and were standing with their\n eyes fastened on the clean-shaven face\n of the judge, who was saying such weighty things")
+sample_text.append("Conradin hated her with a desperate sincerity\n which he was perfectly able to mask.")
+sample_text.append("The man held a double-barrelled gun cocked in his\n hand, and screwed up his eyes in the direction\n of his lean old dog who was running on ahead sniffing the bushes")
+idx = random.randint(0, len(sample_text)-1)
+splitted = sample_text[idx].split()
 wgtW = 800
 wgtH = 600
 
@@ -33,7 +40,7 @@ class TrainingWin(QWidget):
 		self.sampleTxt.setGeometry(285, 140, 260, 60)
 		self.sampleTxt.setFont(QFont('Times', 15))
 		self.sampleTxt.setAlignment(Qt.AlignCenter)
-		self.sampleTxt.setText(sample_text)
+		self.sampleTxt.setText(sample_text[idx])
 		self.sampleTxt.adjustSize()
 		h1 = int(self.sampleTxt.height() * 1.6)
 		w1 = int(self.sampleTxt.width() * 1.3)
@@ -100,7 +107,7 @@ class TrainingWin(QWidget):
 				self.lbl.adjustSize()
 				self.end_time = time.perf_counter()
 
-				pace = 60 * ((len(sample_text) - sample_text.count(' ')) / (self.end_time - self.start_time))
+				pace = 60 * ((len(sample_text[idx]) - sample_text[idx].count(' ')) / (self.end_time - self.start_time))
 				pace = str(round(pace, 2))
 				self.pacelbl.setText(pace + " sym/min")
 				self.pacelbl.adjustSize()
