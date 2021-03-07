@@ -43,29 +43,15 @@ class Window(QMainWindow):
         self.label.setGeometry(20, 240, 260, 60)
         self.label.setFont(QFont('Times', 15))
         self.label.setAlignment(Qt.AlignCenter)
-        self.label.setText("Your IP address: {}".format(get_ip()))
-        self.label.setStyleSheet("QLabel"
-                                 "{"
-                                 "color : black;"
-                                 "border : 3px solid black;"
-                                 "background : white;"
-                                 "}")        
+        self.label.setText("Your IP address: {}".format(get_ip()))     
 
         nickname = QLabel(self)
-        nickname.setGeometry(20, 100, 120, 25)
-        nickname.setFont(QFont('Times', 15))
+        nickname.setGeometry(20, 100, 120, 30)
         nickname.setText("Your nickname: ")
-        nickname.setStyleSheet("QLabel"
-                              "{"
-                              "color : black;"
-                              "border : 3px solid black;"
-                              "background : white;"
-                              "}")
 
-        self.text_edit = QTextEdit()
-        self.text_edit.setPlainText(get_name())
-        self.text_edit.setGeometry(140, 100, 140, 25)
-        self.text_edit.setFont(QFont('Times', 15))
+        self.text_edit = QLineEdit()
+        self.text_edit.setText(get_name())
+        self.text_edit.setGeometry(140, 100, 140, 30)
         self.layout().addWidget(self.text_edit)
 
         pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
@@ -95,12 +81,60 @@ class Window(QMainWindow):
 
 
 # create pyqt5 app
-App = QApplication(sys.argv)
-
 
 def start_app():
     # create the instance of our Window
+    App = QApplication(sys.argv)
+    style = """
+        QWidget{
+            background: #f2f2f2;
+        }
+
+        QLabel{
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 5px;
+            color: #242424;
+            font-size: 14px;
+            border-style: solid;
+            border: 2px solid #242424;
+            border-radius: 10px;
+        }
+
+        QLineEdit{
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 5px;
+            color: #f2f2f2;
+            background-color: #242424;
+            font-size: 14px;
+            border: 2px solid #242424;
+            border-radius: 10px;
+        }
+
+        QPushButton{
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 5px;
+            color: #242424;
+            font-size: 14px;
+            border-style: solid;
+            border: 2px solid #242424;
+            border-radius: 10px;
+        }
+        QPushButton:hover{
+            color: #f2f2f2;
+            background-color: #242424;
+        }
+
+        QProgressBar {
+            border: 2px solid #242424;
+            border-radius: 5px;
+            text-align: center;
+        }
+        QProgressBar::chunk {
+            background-color: #242424;
+        }
+    """
+    App.setStyleSheet(style)
+
     window = Window()
     App.exec()
-# start the app
-# sys.exit(App.exec())
+
