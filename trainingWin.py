@@ -51,8 +51,8 @@ class TrainingWin(QWidget):
 
         self.correct_words = 0
         self.started = False
-        self.start_time = 0.0;
-        self.end_time = 0.0;
+        self.start_time = 0.0
+        self.end_time = 0.0
         self.cwPtr = 0
 
     def training_ui(self):
@@ -90,11 +90,12 @@ class TrainingWin(QWidget):
 
         plby = pbry - 25
         self.plbl = QLabel(self)
-        # self.plbl.setObjectName("progress_label")
+        self.plbl.setObjectName("progress_label")
         self.plbl.setGeometry(pbrx + 5, plby, 30, qlh)
         self.plbl.setText("0%")
 
         self.pacelbl = QLabel(self)
+        self.plbl.setObjectName("pace_label")
         self.pacelbl.setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
 
         self.show()
@@ -119,7 +120,7 @@ class TrainingWin(QWidget):
                     (self.correct_words / float(len(self.splitted))) * 100)
                 send_progress.apply_async([NAME, prcnt])
                 self.pbar.setValue(get_progres(NAME))
-                self.plbl.setText(str(prcnt) + "%")
+                self.plbl.setText(str(get_progres(NAME)) + "%")
                 self.plbl.adjustSize()
 
             self.lbl.setText(str(self.correct_words))
@@ -127,6 +128,8 @@ class TrainingWin(QWidget):
 
             if self.correct_words == len(self.splitted):
                 self.lbl.setText("Congratulations")
+                self.pbar.setValue(100)
+                self.plbl.setText(str(100) + "%")
                 self.lbl.adjustSize()
                 self.end_time = time.perf_counter()
 

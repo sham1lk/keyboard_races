@@ -4,8 +4,10 @@ import celery
 import sqlite3
 conn = sqlite3.connect('orders.db')
 cur = conn.cursor()
+cur.execute("""DROP table IF EXISTS users;""")
 cur.execute("""CREATE TABLE IF NOT EXISTS users(
    name TEXT PRIMARY KEY,
+   room TEXT,
    progres INT);
 """)
 
