@@ -5,6 +5,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, \
     QHBoxLayout, QFormLayout, QGridLayout
 
+from trainingWin import TrainingWin
+
 sample_text = [
     "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other",
     "When and where, it matters not now to\nrelate--but once upon a time as I was\npassing through a thinly peopled district\nof country, night came down upon me, almost unawares.",
@@ -30,7 +32,7 @@ class CreateGame(QWidget):
 
         create_game = QPushButton("Create game", self)
         create_game.setGeometry(20, 380, 200, 50)
-        create_game.clicked.connect(self.create_game)
+        create_game.clicked.connect(self.create)
         create_game.setFont(QFont('Times', 15))
 
         self.qle = QLineEdit(self)
@@ -50,7 +52,7 @@ class CreateGame(QWidget):
     def onChanged(self):
         self.show()
 
-    def create_game(self):
+    def create(self):
         conn = sqlite3.connect('orders.db')
         cur = conn.cursor()
         cur.execute("""DROP table IF EXISTS game;""")
@@ -59,8 +61,10 @@ class CreateGame(QWidget):
             text TEXT);
         """)
         text = self.text.text() or sample_text[
-            random.randint(0, len(sample_text))]
+            random.randint(0, len(sample_text)-1)]
         cur.execute(
             """INSERT INTO game (name, text) VALUES(?, ?);""",
             (self.qle.text(), text))
         conn.commit()
+        self.close()
+        self.w = TrainingWin()

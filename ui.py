@@ -7,11 +7,14 @@ from PyQt5.QtCore import *
 
 import sys
 
-# create a Window class
-from create_game import CreateGame
 from helpers import get_ip, get_name
 NAME = get_name().replace('-','_')
+# create a Window class
+from create_game import CreateGame
 from trainingWin import TrainingWin
+
+
+
 
 training_window = None
 
