@@ -7,13 +7,12 @@ from PyQt5.QtCore import *
 
 import sys
 
-# create a Window class
 from helpers import get_ip, get_name
-from tasks import celery_get_name
-NAME = get_name().replace('-','p')
+NAME = get_name().replace('-','_')
+# create a Window class
+from connect_game import ConnectGame
+from create_game import CreateGame
 from trainingWin import TrainingWin
-
-training_window = None
 
 
 class Window(QMainWindow):
@@ -68,9 +67,11 @@ class Window(QMainWindow):
     def create_game(self):
         # self.nickname = self.text_edit.toPlainText()
         self.label.setText("Create game")
+        self.w = CreateGame()
 
     def connect_to_game(self):
         self.label.setText("Connect game")
+        self.w=ConnectGame()
 
     def trainingBtn(self):
         self.label.setText("Training")
@@ -90,10 +91,26 @@ def start_app():
             background: #f2f2f2;
         }
 
-        QLabel{
+        QLabel#progress_label, #pace_label{
             font-family: Arial, Helvetica, sans-serif;
-            padding: 5px;
             color: #242424;
+            font-size: 15px;
+        }
+
+        QLabel#sample_text{
+            font-family: Arial, Helvetica, sans-serif;
+            color: #242424;
+            padding: 5px;
+            font-size: 18px;
+            border-style: solid;
+            border: 2px solid #242424;
+            border-radius: 10px;
+        }
+
+        QLabel#label, #nickname, #image{
+            font-family: Arial, Helvetica, sans-serif;
+            color: #242424;
+            padding: 5px;
             font-size: 14px;
             border-style: solid;
             border: 2px solid #242424;
