@@ -8,7 +8,7 @@ from PyQt5.QtCore import *
 
 import sys
 import random
-from tasks import send_progress
+from tasks import send_progress, app
 from ui import NAME
 
 conn = sqlite3.connect('orders.db')
@@ -117,7 +117,7 @@ class TrainingWin(QWidget):
 
                 prcnt = int(
                     (self.correct_words / float(len(self.splitted))) * 100)
-                send_progress.delay(NAME, prcnt)
+                send_progress.apply_async([NAME, prcnt])
                 self.pbar.setValue(get_progres(NAME))
                 self.plbl.setText(str(prcnt) + "%")
                 self.plbl.adjustSize()
@@ -131,10 +131,11 @@ class TrainingWin(QWidget):
                 self.end_time = time.perf_counter()
 
                 pace = 60 * ((self.stxtLen - self.stxtSpace) / (
-                            self.end_time - self.start_time))
+                        self.end_time - self.start_time))
                 pace = str(round(pace, 2))
                 self.pacelbl.setText(pace + " sym/min")
                 self.pacelbl.adjustSize()
+
 
 # def endTraining(self):
 # 	pass

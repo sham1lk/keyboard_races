@@ -10,7 +10,7 @@ import sys
 # create a Window class
 from helpers import get_ip, get_name
 from tasks import celery_get_name
-NAME = get_name().replace('-','_')
+NAME = get_name().replace('-','p')
 from trainingWin import TrainingWin
 
 training_window = None
