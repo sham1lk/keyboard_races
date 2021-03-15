@@ -10,10 +10,4 @@ def get_ip():
 
 
 def get_name():
-    try:
-        if not Redis.get('name'):
-            Redis.set('name', generate_slug(2))
-        return Redis.get('name')
-    except redis.ConnectionError:
-        print("Redis is not setup. Contact administrator")
     return generate_slug(2)

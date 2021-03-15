@@ -9,18 +9,20 @@ import sys
 
 # create a Window class
 from helpers import get_ip, get_name
+from tasks import celery_get_name
+NAME = get_name().replace('-','_')
 from trainingWin import TrainingWin
 
 training_window = None
+
 
 class Window(QMainWindow):
     # constructor
     def __init__(self):
         super().__init__()
-        self.setGeometry(100, 100,800, 600)
+        self.setGeometry(100, 100, 800, 600)
         self.setWindowTitle("New Game")
         self.main_menu()
-
 
     # method for components
     def main_menu(self):
@@ -43,30 +45,29 @@ class Window(QMainWindow):
         self.label.setGeometry(20, 240, 260, 60)
         self.label.setFont(QFont('Times', 15))
         self.label.setAlignment(Qt.AlignCenter)
-        self.label.setText("Your IP address: {}".format(get_ip()))     
+        self.label.setText("Your IP address: {}".format(get_ip()))
 
         nickname = QLabel(self)
         nickname.setGeometry(20, 100, 120, 30)
         nickname.setText("Your nickname: ")
 
         self.text_edit = QLineEdit()
-        self.text_edit.setText(get_name())
+        self.text_edit.setText(NAME)
         self.text_edit.setGeometry(140, 100, 140, 30)
         self.layout().addWidget(self.text_edit)
 
-        pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
-        
+        pixmap = QPixmap('statics/image.jpg').scaled(400, 500,
+                                                     QtCore.Qt.KeepAspectRatio)
+
         label = QLabel(self)
         label.setPixmap(pixmap)
         label.setGeometry(400, 100, 350, 200)
         # self.layout().addWidget(label)
-    
         self.show()
 
     def create_game(self):
         # self.nickname = self.text_edit.toPlainText()
         self.label.setText("Create game")
-
 
     def connect_to_game(self):
         self.label.setText("Connect game")
@@ -74,7 +75,6 @@ class Window(QMainWindow):
     def trainingBtn(self):
         self.label.setText("Training")
         self.w = TrainingWin()
-
 
     def hide_menu(self):
         pass
@@ -137,4 +137,3 @@ def start_app():
 
     window = Window()
     App.exec()
-
