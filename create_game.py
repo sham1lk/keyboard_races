@@ -1,5 +1,6 @@
 import random
 import sqlite3
+from datetime import datetime, timedelta
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, \
@@ -20,7 +21,6 @@ class CreateGame(QWidget):
     # constructor
     def __init__(self):
         super().__init__()
-        self.setLayout(QGridLayout())
         self.wgtW = 800
         self.wgtH = 600
         self.setGeometry(100, 100, self.wgtW, self.wgtH)
@@ -30,7 +30,7 @@ class CreateGame(QWidget):
         room_name.setGeometry(20, 100, 120, 30)
         room_name.setText("Room Name: ")
 
-        create_game = QPushButton("Create game", self)
+        create_game = QPushButton("Start game", self)
         create_game.setGeometry(20, 380, 200, 50)
         create_game.clicked.connect(self.create)
         create_game.setFont(QFont('Times', 15))
@@ -58,13 +58,14 @@ class CreateGame(QWidget):
         cur.execute("""DROP table IF EXISTS game;""")
         cur.execute("""CREATE TABLE game(
             name TEXT PRIMARY KEY,
-            text TEXT);
+            text TEXT,
+            time timestamp);
         """)
         text = self.text.text() or sample_text[
             random.randint(0, len(sample_text)-1)]
         cur.execute(
-            """INSERT INTO game (name, text) VALUES(?, ?);""",
-            (self.qle.text(), text))
+            """INSERT INTO game (name, text, time) VALUES(?, ?, ?);""",
+            (self.qle.text(), text, datetime.utcnow() + timedelta(0, 60)))
         conn.commit()
         self.close()
-        self.w = TrainingWin()
+        self.w = TrainingWin(traning=False)

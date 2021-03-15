@@ -25,7 +25,7 @@ def get_progres(name):
 
 class TrainingWin(QWidget):
     # constructor
-    def __init__(self):
+    def __init__(self, training=True):
         super().__init__()
         self.sample_text = []
         self.sample_text.append(
@@ -118,7 +118,7 @@ class TrainingWin(QWidget):
 
                 prcnt = int(
                     (self.correct_words / float(len(self.splitted))) * 100)
-                send_progress.apply_async([NAME, prcnt])
+                send_progress.apply_async([NAME, '', prcnt])
                 self.pbar.setValue(get_progres(NAME))
                 self.plbl.setText(str(get_progres(NAME)) + "%")
                 self.plbl.adjustSize()

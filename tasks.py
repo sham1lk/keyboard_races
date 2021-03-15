@@ -1,12 +1,9 @@
 import sqlite3
 
 import celery
-from celery.worker.control import Panel
 
-from kombu import Queue, Exchange
 from kombu.common import Broadcast
 
-from helpers import get_name
 
 conn = sqlite3.connect('orders.db')
 cur = conn.cursor()
@@ -18,9 +15,10 @@ app.conf.broker_url = "amqp://xekacxtl:c2GI0ApaiIIgnVuSumk3ZogdsEUAkedK@jellyfis
 app.conf.task_default_queue = 'broadcast_tasks'
 app.conf.task_queues = (Broadcast('broadcast_tasks'),)
 
+
 @app.task()
-def send_progress(name, progres):
+def send_progress(name, progres, room):
     cur.execute(
-        """REPLACE INTO users (name, progres) VALUES(?, ?);""", (name,
-                                                                progres))
+        """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (name,
+                                                                progres, room))
     conn.commit()
