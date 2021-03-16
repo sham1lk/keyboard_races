@@ -67,14 +67,18 @@ class TrainingWin(QWidget):
         self.sampleTxt = QLabel(self)
         self.qle = QLineEdit(self)
         self.lbl = QLabel(self)
+
+        # TODO: SQL player amount
         self.playerAmount = 3
         self.pbar = []
         self.plbl = []
         self.pacelbl = []
+        self.finished = []
         for i in range(self.playerAmount):
             self.pbar.append(QProgressBar(self))
             self.plbl.append(QLabel(self))
             self.pacelbl.append(QLabel(self))
+            self.finished.append(0)
 
         if training:
             self.restart = QPushButton("Restart", self)
@@ -189,6 +193,15 @@ class TrainingWin(QWidget):
             self.plbl[i].setText(str(get_progres(NAME)) + "%")
             self.plbl[i].adjustSize()
 
+            if self.started and self.finished[i]==0:
+                if self.pbar[i].value() > 99:
+                    self.end_time = time.perf_counter()
+                    pace = 60 * ((self.stxtLen - self.stxtSpace) / (self.end_time - self.start_time))
+                    pace = str(round(pace, 2))
+                    self.pacelbl[i].setText(pace + " sym/min") 
+                    self.pacelbl[i].adjustSize()
+                    self.finished[i] = 1
+
 
     def onChanged(self, text):
         if not self.started:
@@ -221,11 +234,11 @@ class TrainingWin(QWidget):
             if self.correct_words == len(self.splitted):
                 self.lbl.setText("Finish")
                 self.lbl.adjustSize()
-                self.end_time = time.perf_counter()
+                # self.end_time = time.perf_counter()s
 
-                pace = 60 * ((self.stxtLen - self.stxtSpace) / (
-                        self.end_time - self.start_time))
-                pace = str(round(pace, 2))
+                # pace = 60 * ((self.stxtLen - self.stxtSpace) / (
+                #         self.end_time - self.start_time))
+                # pace = str(round(pace, 2))
                 # TODO: 
                 # self.pacelbl.setText(pace + " sym/min") 
                 # self.pacelbl.adjustSize()
