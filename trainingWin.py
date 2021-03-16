@@ -120,6 +120,22 @@ class TrainingWin(QWidget):
         self.sampleTxt.setGeometry(285, 140, 260, 60)
         self.sampleTxt.setAlignment(Qt.AlignCenter)
         self.sampleTxt.setText(self.game_text)
+        
+        if self.creator or not self.training:
+            self.qle.setDisabled(True)
+        if not self.training and not self.creator:
+            game = get_game(NAME)
+            while not game:
+                game = get_game(NAME)
+                time.sleep(1)
+            game = game[0]
+            self.game_name = game[0]
+            self.game_text = game[1]
+            self.start_time = game[2]
+            self.sampleTxt.setText(self.game_text)
+            self.sampleTxt.adjustSize()
+            self.qle.setDisabled(False)
+
         self.sampleTxt.adjustSize()
         h1 = int(self.sampleTxt.height() * 1.6)
         w1 = int(self.sampleTxt.width() * 1.3)
@@ -145,20 +161,7 @@ class TrainingWin(QWidget):
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
 
-        if self.creator or not self.training:
-            self.qle.setDisabled(True)
-        if not self.training and not self.creator:
-            game = get_game(NAME)
-            while not game:
-                game = get_game(NAME)
-                time.sleep(1)
-            game = game[0]
-            self.game_name = game[0]
-            self.game_text = game[1]
-            self.start_time = game[2]
-            self.sampleTxt.setText(self.game_text)
-            self.sampleTxt.adjustSize()
-            self.qle.setDisabled(False)
+        
 
 
         for i in range(self.playerAmount):
