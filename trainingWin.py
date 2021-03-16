@@ -139,6 +139,7 @@ class TrainingWin(QWidget):
 
         lbly = sty + h1 + 30
         
+        self.lbl.setObjectName("lbll")
         self.lbl.setText("0")
         self.lbl.setGeometry(w2 + qlw + 20, lbly, 30, qlh)
 
@@ -157,7 +158,7 @@ class TrainingWin(QWidget):
         self.plbl.setText("0%")
 
         
-        self.plbl.setObjectName("pace_label")
+        self.pacelbl.setObjectName("pace_label")
         self.pacelbl.setText("")
         self.pacelbl.setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
 
