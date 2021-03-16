@@ -105,7 +105,6 @@ class TrainingWin(QWidget):
         self.stxtLen = len(self.game_text)
         self.stxtSpace = self.game_text.count(' ')
         self.splitted = self.game_text.split()
-        self.training_ui()
         self.correct_words = 0
         self.started = False
         self.start_time = 0.0;
@@ -120,7 +119,7 @@ class TrainingWin(QWidget):
         self.sampleTxt.setGeometry(285, 140, 260, 60)
         self.sampleTxt.setAlignment(Qt.AlignCenter)
         self.sampleTxt.setText(self.game_text)
-        
+
         if self.creator or not self.training:
             self.qle.setDisabled(True)
         if not self.training and not self.creator:
@@ -135,6 +134,10 @@ class TrainingWin(QWidget):
             self.sampleTxt.setText(self.game_text)
             self.sampleTxt.adjustSize()
             self.qle.setDisabled(False)
+            self.splitted = self.game_text.split()
+            self.stxtLen = len(self.game_text)
+            self.stxtSpace = self.game_text.count(' ')
+            self.splitted = self.game_text.split()
 
         self.sampleTxt.adjustSize()
         h1 = int(self.sampleTxt.height() * 1.6)
