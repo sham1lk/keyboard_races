@@ -55,28 +55,28 @@ class TrainingWin(QWidget):
         self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
         self.game_name = 'training'
         self.start_time = datetime.utcnow()
-        if creator:
-            game = get_game(NAME)
-            game = game[0]
-            self.game_name = game[0]
-            self.game_text = game[1]
-            self.start_time = string_to_time(game[2])
-            while self.start_time > datetime.utcnow() - timedelta(0, 5):
-                pregame_communication.apply_async(
-                    [self.game_name, self.game_text, self.start_time])
-                time.sleep(1)
-        elif not training:
-            game = get_game(NAME)
-            while not game:
-                time.sleep(1)
-            game = game[0]
-            self.game_name = game[0]
-            self.game_text = game[1]
-            self.start_time = game[2]
+        # if creator:
+        #     game = get_game(NAME)
+        #     game = game[0]
+        #     self.game_name = game[0]
+        #     self.game_text = game[1]
+        #     self.start_time = string_to_time(game[2])
+        #     k = 0
+        #     while k<5:
+        #         print(self.start_time, datetime.utcnow() - timedelta(0, 5))
+        #         pregame_communication.apply_async(
+        #             [self.game_name, self.game_text, self.start_time])
+        #         k+=1
+        #         time.sleep(1)
+        # elif not training:
+        #     game = get_game(NAME)
+        #     while not game:
+        #         time.sleep(1)
+        #     game = game[0]
+        #     self.game_name = game[0]
+        #     self.game_text = game[1]
+        #     self.start_time = game[2]
 
-        while self.start_time > datetime.utcnow():
-            # отсчет 5 4 3 2 1
-            time.sleep(1)
         self.sampleTxt = QLabel(self)
         self.qle = QLineEdit(self)
         self.lbl = QLabel(self)

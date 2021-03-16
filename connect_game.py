@@ -47,9 +47,8 @@ class ConnectGame(QWidget):
         """)
         conn.commit()
         cur.execute(
-            """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""",
-            (NAME,
-             0, self.qle.text()))
+            """REPLACE INTO users (name, room, progres) VALUES(?, ?, ?);""",
+            (NAME, self.qle.text(), 0))
         conn.commit()
         send_progress.apply_async(
             [NAME, 0, self.qle.text()])

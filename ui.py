@@ -11,6 +11,8 @@ import sys
 from helpers import get_ip, get_name
 NAME = get_name().replace('-','_')
 from trainingWin import TrainingWin
+from connect_game import ConnectGame
+from create_game import CreateGame
 
 training_window = None
 
@@ -69,9 +71,10 @@ class Window(QMainWindow):
 
     def create_game(self):
         self.label.setText("Create game")
-
+        self.w = ConnectGame()
     def connect_to_game(self):
         self.label.setText("Connect game")
+        self.w = CreateGame()
 
     def trainingBtn(self):
         self.label.setText("Training")
