@@ -287,6 +287,7 @@ class TrainingWin(QWidget):
                     [self.game_name, self.game_text, self.start_time])
         pregame_communication.apply_async(
                     [self.game_name, self.game_text, self.start_time])
+        time.sleep(1)
         self.qle.setDisabled(False)
         self.restart.setHidden(True)
         self.playerAmount = len(get_players(NAME))
