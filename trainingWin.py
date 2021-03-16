@@ -283,10 +283,7 @@ class TrainingWin(QWidget):
     def startBtn(self):
         pregame_communication.apply_async(
                     [self.game_name, self.game_text, self.start_time])
-        pregame_communication.apply_async(
-                    [self.game_name, self.game_text, self.start_time])
-        pregame_communication.apply_async(
-                    [self.game_name, self.game_text, self.start_time])
+        send_progress.apply_async([NAME, self.game_name, 0])
         time.sleep(1)
         self.qle.setDisabled(False)
         self.restart.setHidden(True)
@@ -310,7 +307,7 @@ class TrainingWin(QWidget):
         lbly = sty + h1 + 30
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
-        for i in range(5):
+        for i in range(self.playerAmount):
             self.pbar[i].setTextVisible(False)
             self.pbar[i].setValue(0)
             self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
