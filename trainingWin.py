@@ -19,7 +19,7 @@ cur = conn.cursor()
 def get_progres(name):
     try:
         cur.execute("SELECT progres FROM users where name=?", (name,))
-        return cur.fetchall()[0][0]
+        return int(cur.fetchall()[0][0])
     except:
         return 0
 
