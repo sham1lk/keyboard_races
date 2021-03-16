@@ -80,17 +80,21 @@ class TrainingWin(QWidget):
         self.sampleTxt = QLabel(self)
         self.qle = QLineEdit(self)
         self.lbl = QLabel(self)
-        self.pbar = QProgressBar(self)
-        self.plbl = QLabel(self)
-        self.pacelbl = QLabel(self)
+        self.playerAmount = 3
+        self.pbar = []
+        self.plbl = []
+        self.pacelbl = []
+        for i in range(self.playerAmount):
+            self.pbar.append(QProgressBar(self))
+            self.plbl.append(QLabel(self))
+            self.pacelbl.append(QLabel(self))
+
         if training:
             self.restart = QPushButton("Restart", self)
             self.restart.setGeometry(550, 20, 200, 50)
             self.restart.clicked.connect(self.restartBtn)
 
         self.reset()
-
-        
 
 
     def reset(self):
@@ -147,22 +151,38 @@ class TrainingWin(QWidget):
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
         
-        self.pbar.setTextVisible(False);
-        self.pbar.setValue(0)
-        self.pbar.setGeometry(pbrx, pbry, pbrW, qlh - 10)
 
-        plby = pbry - 25
-        
-        self.plbl.setObjectName("progress_label")
-        self.plbl.setGeometry(pbrx + 5, plby, 30, qlh)
-        self.plbl.setText("0%")
+        for i in range(self.playerAmount):
+            self.pbar[i].setTextVisible(False);
+            self.pbar[i].setValue(0)
+            self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
 
-        
-        self.pacelbl.setObjectName("pace_label")
-        self.pacelbl.setText("")
-        self.pacelbl.setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
+            plby = pbry - 25
+
+            self.plbl[i].setObjectName("progress_label" + str(i))
+            self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
+            self.plbl[i].setText("0%")
+
+            self.pacelbl[i].setObjectName("pace_label" + str(i))
+            self.pacelbl[i].setText("")
+            self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
+
+            pbry += 50
+
+
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.time)
+        self.timer.start(1000)
 
         self.show()
+
+
+    def time(self):
+        for i in range(self.playerAmount):
+            self.pbar[i].setValue(get_progres(NAME))
+            self.plbl[i].setText(str(get_progres(NAME)) + "%")
+            self.plbl[i].adjustSize()
 
 
     def onChanged(self, text):
@@ -181,26 +201,29 @@ class TrainingWin(QWidget):
                 self.cwPtr += len(self.splitted[self.correct_words]) + 1
                 self.correct_words += 1
 
-                prcnt = int(
-                    (self.correct_words / float(len(self.splitted))) * 100)
+                prcnt = int((self.correct_words / float(len(self.splitted))) * 100)
                 send_progress.apply_async([NAME, self.game_name, prcnt])
-                self.pbar.setValue(get_progres(NAME))
-                self.plbl.setText(str(get_progres(NAME)) + "%")
-                self.plbl.adjustSize()
+
+                # self.pbar.setValue(get_progres(NAME))
+                # self.plbl.setText(str(get_progres(NAME)) + "%")
+                # self.plbl.adjustSize()
+
+                self.timer.start(100)
 
             self.lbl.setText(str(self.correct_words))
             self.lbl.adjustSize()
 
             if self.correct_words == len(self.splitted):
-                self.lbl.setText("Congratulations")
+                self.lbl.setText("Finish")
                 self.lbl.adjustSize()
                 self.end_time = time.perf_counter()
 
                 pace = 60 * ((self.stxtLen - self.stxtSpace) / (
                         self.end_time - self.start_time))
                 pace = str(round(pace, 2))
-                self.pacelbl.setText(pace + " sym/min")
-                self.pacelbl.adjustSize()
+                # TODO: 
+                # self.pacelbl.setText(pace + " sym/min") 
+                # self.pacelbl.adjustSize()
 
 
     def restartBtn(self):
