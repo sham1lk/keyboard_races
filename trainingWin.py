@@ -23,6 +23,12 @@ def get_progres(name):
     except:
         return 0
 
+def get_players(name):
+    cur.execute("SELECT room FROM users where name=?", (name,))
+    game = cur.fetchall()
+    if game:
+        cur.execute("SELECT name FROM users where room=?", (game[0][0],))
+    return cur.fetchall()
 
 def get_game(name):
     cur.execute("SELECT room FROM users where name=?", (name,))
@@ -42,6 +48,7 @@ class TrainingWin(QWidget):
     def __init__(self, training=True, creator=False):
         super().__init__()
         self.sample_text = []
+        self.playerAmount = 0
         self.sample_text.append(
             "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other")
         self.sample_text.append(
@@ -68,22 +75,11 @@ class TrainingWin(QWidget):
         self.qle = QLineEdit(self)
         self.lbl = QLabel(self)
 
-        # TODO: SQL player amount
-        self.playerAmount = 3
-        self.pbar = []
-        self.plbl = []
-        self.pacelbl = []
-        self.finished = []
-        for i in range(self.playerAmount):
-            self.pbar.append(QProgressBar(self))
-            self.plbl.append(QLabel(self))
-            self.pacelbl.append(QLabel(self))
-            self.finished.append(0)
-
         if training:
             self.restart = QPushButton("Restart", self)
             self.restart.setGeometry(550, 20, 200, 50)
             self.restart.clicked.connect(self.restartBtn)
+            self.playerAmount = 1
         if creator:
             self.restart = QPushButton("Start", self)
             self.restart.setGeometry(550, 20, 200, 50)
@@ -139,6 +135,19 @@ class TrainingWin(QWidget):
             self.stxtSpace = self.game_text.count(' ')
             self.splitted = self.game_text.split()
 
+
+        if not self.creator:
+            self.playerAmount = len(get_players(NAME)) or 1
+            self.pbar = []
+            self.plbl = []
+            self.pacelbl = []
+            self.finished = []
+            for i in range(self.playerAmount):
+                self.pbar.append(QProgressBar(self))
+                self.plbl.append(QLabel(self))
+                self.pacelbl.append(QLabel(self))
+                self.finished.append(0)
+
         self.sampleTxt.adjustSize()
         h1 = int(self.sampleTxt.height() * 1.6)
         w1 = int(self.sampleTxt.width() * 1.3)
@@ -166,23 +175,23 @@ class TrainingWin(QWidget):
 
         
 
+        if not self.creator:
+            for i in range(self.playerAmount):
+                self.pbar[i].setTextVisible(False);
+                self.pbar[i].setValue(0)
+                self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
 
-        for i in range(self.playerAmount):
-            self.pbar[i].setTextVisible(False);
-            self.pbar[i].setValue(0)
-            self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
+                plby = pbry - 25
 
-            plby = pbry - 25
+                self.plbl[i].setObjectName("progress_label" + str(i))
+                self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
+                self.plbl[i].setText("0%")
 
-            self.plbl[i].setObjectName("progress_label" + str(i))
-            self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
-            self.plbl[i].setText("0%")
+                self.pacelbl[i].setObjectName("pace_label" + str(i))
+                self.pacelbl[i].setText("")
+                self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
 
-            self.pacelbl[i].setObjectName("pace_label" + str(i))
-            self.pacelbl[i].setText("")
-            self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
-
-            pbry += 50
+                pbry += 50
 
 
 
@@ -194,9 +203,10 @@ class TrainingWin(QWidget):
 
 
     def time(self):
+
         for i in range(self.playerAmount):
-            self.pbar[i].setValue(get_progres(NAME))
-            self.plbl[i].setText(str(get_progres(NAME)) + "%")
+            self.pbar[i].setValue(get_progres(get_players(NAME)[i][0]))
+            self.plbl[i].setText(str(get_progres(get_players(NAME)[i][0])) + "%")
             self.plbl[i].adjustSize()
 
             if self.started and self.finished[i]==0:
@@ -259,6 +269,43 @@ class TrainingWin(QWidget):
                     [self.game_name, self.game_text, self.start_time])
         self.qle.setDisabled(False)
         self.restart.setHidden(True)
+        self.playerAmount = len(get_players(NAME))
+        print(self.playerAmount)
+        self.pbar = []
+        self.plbl = []
+        self.pacelbl = []
+        self.finished = []
+        for i in range(self.playerAmount):
+            self.pbar.append(QProgressBar(self))
+            self.plbl.append(QLabel(self))
+            self.pacelbl.append(QLabel(self))
+            self.finished.append(0)
+        pbrW = 500
+        qlh = 25
+        h1 = int(self.sampleTxt.height() * 1.6)
+        w1 = int(self.sampleTxt.width() * 1.3)
+        stx = (self.wgtW - w1) / 2
+        sty = (self.wgtH - h1) / 5
+        lbly = sty + h1 + 30
+        pbrx = (self.wgtW - pbrW) / 2
+        pbry = lbly + 120
+        for i in range(self.playerAmount):
+                self.pbar[i].setTextVisible(False)
+                self.pbar[i].setValue(0)
+                self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
+
+                plby = pbry - 25
+
+                self.plbl[i].setObjectName("progress_label" + str(i))
+                self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
+                self.plbl[i].setText("0%")
+
+                self.pacelbl[i].setObjectName("pace_label" + str(i))
+                self.pacelbl[i].setText("")
+                self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
+
+                pbry += 50
+
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)

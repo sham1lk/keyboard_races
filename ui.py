@@ -1,3 +1,4 @@
+import sqlite3
 import time
 
 from PyQt5.QtWidgets import *
@@ -9,7 +10,8 @@ import sys
 
 # create a Window class
 from helpers import get_ip, get_name
-NAME = get_name().replace('-','_')
+
+NAME = get_name().replace('-', '_')
 from trainingWin import TrainingWin
 from connect_game import ConnectGame
 from create_game import CreateGame
@@ -56,12 +58,13 @@ class Window(QMainWindow):
         self.text_edit.setGeometry(140, 100, 140, 30)
         self.layout().addWidget(self.text_edit)
 
-        pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
+        pixmap = QPixmap('statics/image.jpg').scaled(400, 500,
+                                                     QtCore.Qt.KeepAspectRatio)
 
         label = QLabel(self)
         label.setPixmap(pixmap)
         label.setGeometry(400, 100, 350, 200)
-        
+
         picLabel = QLabel(self)
         picLabel.setObjectName("image")
         picLabel.setPixmap(pixmap)
@@ -79,6 +82,13 @@ class Window(QMainWindow):
 
     def trainingBtn(self):
         self.label.setText("Training")
+        conn = sqlite3.connect('orders.db')
+        cur = conn.cursor()
+        cur.execute(
+            """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""",
+            (NAME,
+             0, 'training'))
+        conn.commit()
         self.w = TrainingWin()
 
     def hide_menu(self):
@@ -162,4 +172,3 @@ def start_app():
 
     window = Window()
     App.exec()
-
