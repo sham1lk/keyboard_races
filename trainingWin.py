@@ -1,5 +1,6 @@
 import sqlite3
 import time
+from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtGui
@@ -8,7 +9,7 @@ from PyQt5.QtCore import *
 
 import sys
 import random
-from tasks import send_progress, app
+from tasks import send_progress, app, pregame_communication
 from ui import NAME
 
 conn = sqlite3.connect('orders.db')
@@ -23,9 +24,22 @@ def get_progres(name):
         return 0
 
 
+def get_game(name):
+    cur.execute("SELECT room FROM users where name=?", (name,))
+    game = cur.fetchall()
+    if game:
+        cur.execute("SELECT * FROM game where name=?", (game[0][0],))
+        return cur.fetchall()
+    else:
+        return False
+
+def string_to_time(str):
+    return datetime.strptime(str, '%Y-%m-%d %H:%M:%S.%f')
+
 class TrainingWin(QWidget):
     # constructor
-    def __init__(self):
+
+    def __init__(self, training=True, creator=False):
         super().__init__()
         self.sample_text = []
         self.sample_text.append(
@@ -37,8 +51,32 @@ class TrainingWin(QWidget):
         self.sample_text.append(
             "Conradin hated her with a desperate sincerity\nwhich he was perfectly able to mask.")
         self.sample_text.append(
-            "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bushes")
-        
+            "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bush
+        self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
+        self.game_name = 'training'
+        self.start_time = datetime.utcnow()
+        if creator:
+            game = get_game(NAME)
+            game = game[0]
+            self.game_name = game[0]
+            self.game_text = game[1]
+            self.start_time = string_to_time(game[2])
+            while self.start_time > datetime.utcnow() - timedelta(0, 5):
+                pregame_communication.apply_async(
+                    [self.game_name, self.game_text, self.start_time])
+                time.sleep(1)
+        elif not training:
+            game = get_game(NAME)
+            while not game:
+                time.sleep(1)
+            game = game[0]
+            self.game_name = game[0]
+            self.game_text = game[1]
+            self.start_time = game[2]
+
+        while self.start_time > datetime.utcnow():
+            # отсчет 5 4 3 2 1
+            time.sleep(1)
         self.sampleTxt = QLabel(self)
         self.qle = QLineEdit(self)
         self.lbl = QLabel(self)
@@ -65,6 +103,10 @@ class TrainingWin(QWidget):
         self.setGeometry(100, 100, self.wgtW, self.wgtH)
         self.setWindowTitle("New Game")
 
+        self.stxtLen = len(self.game_text)
+        self.stxtSpace = self.game_text.count(' ')
+        self.splitted = self.game_text.split()
+        self.training_ui()
         self.correct_words = 0
         self.started = False
         self.start_time = 0.0;
@@ -78,7 +120,7 @@ class TrainingWin(QWidget):
         self.sampleTxt.setObjectName("sample_text")
         self.sampleTxt.setGeometry(285, 140, 260, 60)
         self.sampleTxt.setAlignment(Qt.AlignCenter)
-        self.sampleTxt.setText(self.sample_text[self.idx])
+        self.sampleTxt.setText(self.game_text)
         self.sampleTxt.adjustSize()
         h1 = int(self.sampleTxt.height() * 1.6)
         w1 = int(self.sampleTxt.width() * 1.3)
@@ -131,18 +173,17 @@ class TrainingWin(QWidget):
                 self.qle.clear()
 
                 tmp = '_' * len(self.splitted[self.correct_words])
-                tmp = self.sample_text[self.idx][:self.cwPtr] + tmp + \
-                      self.sample_text[self.idx][self.cwPtr + len(tmp):]
+                tmp = self.game_text[:self.cwPtr] + tmp + \
+                      self.game_text[self.cwPtr + len(tmp):]
                 self.sampleTxt.setText(tmp)
                 self.cwPtr += len(self.splitted[self.correct_words]) + 1
                 self.correct_words += 1
 
                 prcnt = int(
                     (self.correct_words / float(len(self.splitted))) * 100)
-                # send_progress.apply_async([NAME, prcnt])
-                # self.pbar.setValue(get_progres(NAME))
-                self.pbar.setValue(prcnt)
-                self.plbl.setText(str(prcnt) + "%")
+                send_progress.apply_async([NAME, self.game_name, prcnt])
+                self.pbar.setValue(get_progres(NAME))
+                self.plbl.setText(str(get_progres(NAME)) + "%")
                 self.plbl.adjustSize()
 
             self.lbl.setText(str(self.correct_words))

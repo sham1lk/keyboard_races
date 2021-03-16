@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, \
     QHBoxLayout, QFormLayout, QGridLayout
 
 from trainingWin import TrainingWin
+from ui import NAME
 
 sample_text = [
     "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other",
@@ -61,11 +62,17 @@ class CreateGame(QWidget):
             text TEXT,
             time timestamp);
         """)
+
         text = self.text.text() or sample_text[
             random.randint(0, len(sample_text)-1)]
         cur.execute(
             """INSERT INTO game (name, text, time) VALUES(?, ?, ?);""",
             (self.qle.text(), text, datetime.utcnow() + timedelta(0, 60)))
         conn.commit()
+
+        cur.execute(
+        """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (NAME,
+                                                                0, self.qle.text()))
+        conn.commit()
         self.close()
-        self.w = TrainingWin(traning=False)
+        self.w = TrainingWin(training=False, creator=True)

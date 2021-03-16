@@ -1,3 +1,4 @@
+import sqlite3
 from datetime import datetime, timedelta
 
 from PyQt5.QtGui import QFont
@@ -36,6 +37,20 @@ class ConnectGame(QWidget):
         self.show()
 
     def connect(self):
+        conn = sqlite3.connect('orders.db')
+        cur = conn.cursor()
+        cur.execute("""DROP table IF EXISTS game;""")
+        cur.execute("""CREATE TABLE game(
+            name TEXT PRIMARY KEY,
+            text TEXT,
+            time timestamp);
+        """)
+        conn.commit()
+        cur.execute(
+            """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""",
+            (NAME,
+             0, self.qle.text()))
+        conn.commit()
         send_progress.apply_async(
             [NAME, 0, self.qle.text()])
         self.close()

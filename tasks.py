@@ -30,3 +30,11 @@ def send_progress(name, progres, room):
         """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (name,
                                                                 progres, room))
     conn.commit()
+
+
+@app.task()
+def pregame_communication(name, text, time):
+    cur.execute(
+        """REPLACE INTO game (name, text, time) VALUES(?, ?, ?);""", (name,
+                                                                text, time))
+    conn.commit()
