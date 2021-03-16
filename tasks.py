@@ -17,10 +17,10 @@ app.conf.task_queues = (Broadcast('broadcast_tasks'),)
 
 
 @app.task()
-def send_progress(name, progres, room):
+def send_progress(name, room, progres):
     cur.execute(
-        """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (name,
-                                                                progres, room))
+        """REPLACE INTO users (name, room, progres) VALUES(?, ?, ?);""", (name,
+                                                                room, progres))
     conn.commit()
 
 

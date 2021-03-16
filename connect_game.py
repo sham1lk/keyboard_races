@@ -51,6 +51,6 @@ class ConnectGame(QWidget):
             (NAME, self.qle.text(), 0))
         conn.commit()
         send_progress.apply_async(
-            [NAME, 0, self.qle.text()])
+            [NAME, self.qle.text(), 0])
         self.close()
         self.w = TrainingWin(training=False)
