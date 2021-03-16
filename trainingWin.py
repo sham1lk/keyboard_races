@@ -51,7 +51,7 @@ class TrainingWin(QWidget):
         self.sample_text.append(
             "Conradin hated her with a desperate sincerity\nwhich he was perfectly able to mask.")
         self.sample_text.append(
-            "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bush
+            "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bush")
         self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
         self.game_name = 'training'
         self.start_time = datetime.utcnow()
@@ -83,9 +83,10 @@ class TrainingWin(QWidget):
         self.pbar = QProgressBar(self)
         self.plbl = QLabel(self)
         self.pacelbl = QLabel(self)
-        self.restart = QPushButton("Restart", self)
-        self.restart.setGeometry(550, 20, 200, 50)
-        self.restart.clicked.connect(self.restartBtn)
+        if training:
+            self.restart = QPushButton("Restart", self)
+            self.restart.setGeometry(550, 20, 200, 50)
+            self.restart.clicked.connect(self.restartBtn)
 
         self.reset()
 
