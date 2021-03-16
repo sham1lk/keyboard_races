@@ -125,6 +125,7 @@ class TrainingWin(QWidget):
             while not game:
                 game = get_game(NAME)
                 time.sleep(1)
+            time.sleep(1)
             game = game[0]
             self.game_name = game[0]
             self.game_text = game[1]
@@ -280,6 +281,10 @@ class TrainingWin(QWidget):
         self.reset()
 
     def startBtn(self):
+        pregame_communication.apply_async(
+                    [self.game_name, self.game_text, self.start_time])
+        pregame_communication.apply_async(
+                    [self.game_name, self.game_text, self.start_time])
         pregame_communication.apply_async(
                     [self.game_name, self.game_text, self.start_time])
         self.qle.setDisabled(False)
