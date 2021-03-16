@@ -28,7 +28,7 @@ def get_players(name):
     cur.execute("SELECT room FROM users where name=?", (name,))
     game = cur.fetchall()
     if game:
-        cur.execute("SELECT name FROM users where room=?", (game[0][0],))
+        cur.execute("SELECT name FROM users where room=? order by name", (game[0][0],))
     return cur.fetchall()
 
 def get_game(name):
@@ -136,10 +136,22 @@ class TrainingWin(QWidget):
             self.stxtLen = len(self.game_text)
             self.stxtSpace = self.game_text.count(' ')
             self.splitted = self.game_text.split()
+            self.playerAmount = len(get_players(NAME))
+            print(get_players(NAME))
+            self.pbar = []
+            self.plbl = []
+            self.pacelbl = []
+            self.finished = []
+            for i in range(self.playerAmount):
+                self.pbar.append(QProgressBar(self))
+                self.plbl.append(QLabel(self))
+                self.pacelbl.append(QLabel(self))
+                self.finished.append(0)
+            print(get_players(NAME))
 
+        if self.training:
+            self.playerAmount = len(get_players(NAME))
 
-        if not self.creator and not self.pbar:
-            self.playerAmount = len(get_players(NAME)) or 1
             self.pbar = []
             self.plbl = []
             self.pacelbl = []
@@ -250,8 +262,8 @@ class TrainingWin(QWidget):
             self.lbl.adjustSize()
 
             if self.correct_words == len(self.splitted):
-                self.lbl.setText("Congratulations you are{}".format((
-                        self.finished == 1)).sum())
+                self.lbl.setText("Congratulations you are {}".format(
+                        sum(self.finished)+1))
                 self.lbl.adjustSize()
                 # self.end_time = time.perf_counter()s
 
@@ -292,7 +304,7 @@ class TrainingWin(QWidget):
         lbly = sty + h1 + 30
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
-        for i in range(self.playerAmount):
+        for i in range(5):
             self.pbar[i].setTextVisible(False)
             self.pbar[i].setValue(0)
             self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
