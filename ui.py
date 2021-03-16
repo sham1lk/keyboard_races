@@ -1,3 +1,6 @@
+import random
+import sqlite3
+import string
 import time
 
 from PyQt5.QtWidgets import *
@@ -10,6 +13,9 @@ import sys
 # create a Window class
 from helpers import get_ip, get_name
 NAME = get_name().replace('-','_')
+letters = string.ascii_lowercase
+GAME_NAME= ''.join(random.choice(letters) for i in range(10))
+
 from trainingWin import TrainingWin
 from connect_game import ConnectGame
 from create_game import CreateGame
@@ -76,6 +82,12 @@ class Window(QMainWindow):
         self.w = ConnectGame()
 
     def trainingBtn(self):
+        conn = sqlite3.connect('orders.db')
+        cur = conn.cursor()
+        cur.execute(
+        """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (NAME,
+                                                                0, GAME_NAME))
+        conn.commit()
         self.w = TrainingWin()
 
     def hide_menu(self):

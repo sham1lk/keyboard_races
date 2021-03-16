@@ -1,4 +1,5 @@
 import sqlite3
+import string
 import time
 from datetime import datetime, timedelta
 
@@ -10,7 +11,7 @@ from PyQt5.QtCore import *
 import sys
 import random
 from tasks import send_progress, app, pregame_communication
-from ui import NAME
+from ui import NAME, GAME_NAME
 
 conn = sqlite3.connect('orders.db')
 cur = conn.cursor()
@@ -48,6 +49,7 @@ class TrainingWin(QWidget):
     def __init__(self, training=True, creator=False):
         super().__init__()
         self.sample_text = []
+        self.pbar = 0
         self.playerAmount = 0
         self.sample_text.append(
             "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other")
@@ -60,7 +62,7 @@ class TrainingWin(QWidget):
         self.sample_text.append(
             "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bush")
         self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
-        self.game_name = 'training'
+        self.game_name = GAME_NAME
         self.start_time = datetime.utcnow()
         self.creator = creator
         self.training = training
@@ -136,7 +138,7 @@ class TrainingWin(QWidget):
             self.splitted = self.game_text.split()
 
 
-        if not self.creator:
+        if not self.creator and not self.pbar:
             self.playerAmount = len(get_players(NAME)) or 1
             self.pbar = []
             self.plbl = []
@@ -248,7 +250,8 @@ class TrainingWin(QWidget):
             self.lbl.adjustSize()
 
             if self.correct_words == len(self.splitted):
-                self.lbl.setText("Finish")
+                self.lbl.setText("Congratulations you are{}".format((
+                        self.finished == 1)).sum())
                 self.lbl.adjustSize()
                 # self.end_time = time.perf_counter()s
 
@@ -290,21 +293,21 @@ class TrainingWin(QWidget):
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
         for i in range(self.playerAmount):
-                self.pbar[i].setTextVisible(False)
-                self.pbar[i].setValue(0)
-                self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
+            self.pbar[i].setTextVisible(False)
+            self.pbar[i].setValue(0)
+            self.pbar[i].setGeometry(pbrx, pbry, pbrW, qlh - 10)
 
-                plby = pbry - 25
+            plby = pbry - 25
 
-                self.plbl[i].setObjectName("progress_label" + str(i))
-                self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
-                self.plbl[i].setText("0%")
+            self.plbl[i].setObjectName("progress_label" + str(i))
+            self.plbl[i].setGeometry(pbrx + 5, plby, 30, qlh)
+            self.plbl[i].setText("0%")
 
-                self.pacelbl[i].setObjectName("pace_label" + str(i))
-                self.pacelbl[i].setText("")
-                self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
+            self.pacelbl[i].setObjectName("pace_label" + str(i))
+            self.pacelbl[i].setText("")
+            self.pacelbl[i].setGeometry(pbrx + pbrW - 100, plby, 50, qlh)
 
-                pbry += 50
+            pbry += 50
 
 
 if __name__ == '__main__':
