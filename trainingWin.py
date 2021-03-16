@@ -218,7 +218,7 @@ class TrainingWin(QWidget):
 
 
     def time(self):
-
+        self.playerAmount = len(get_players(NAME))
         for i in range(self.playerAmount):
             self.pbar[i].setValue(get_progres(get_players(NAME)[i][0]))
             self.plbl[i].setText(get_players(NAME)[i][0] + ": "+ str(get_progres(get_players(NAME)[i][0])) + "%")
