@@ -9,3 +9,4 @@ PyQt5-stubs
 redis
 requests
 urllib3
+celery

@@ -221,7 +221,7 @@ class TrainingWin(QWidget):
 
         for i in range(self.playerAmount):
             self.pbar[i].setValue(get_progres(get_players(NAME)[i][0]))
-            self.plbl[i].setText(str(get_progres(get_players(NAME)[i][0])) + "%")
+            self.plbl[i].setText(get_players(NAME)[i][0] + ": "+ str(get_progres(get_players(NAME)[i][0])) + "%")
             self.plbl[i].adjustSize()
 
             if self.started and self.finished[i]==0:
