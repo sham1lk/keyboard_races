@@ -1,17 +1,15 @@
 import random
 import sqlite3
 import string
-import time
 
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 
 import sys
 
 # create a Window class
-from helpers import get_ip, get_name
+from helpers import get_name
 NAME = get_name().replace('-','_')
 letters = string.ascii_lowercase
 GAME_NAME= ''.join(random.choice(letters) for i in range(10))

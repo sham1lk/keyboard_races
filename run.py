@@ -1,12 +1,10 @@
 import subprocess
 
-from helpers import get_name
 from ui import start_app
-import celery
 import sqlite3
-subprocess.Popen(['celery', '-A', 'tasks', 'worker'],
-                     stdout=subprocess.PIPE,
-                     stderr=subprocess.PIPE)
+# subprocess.Popen(['celery', '-A', 'tasks', 'worker' '--concurrency=1'],
+#                      stdout=subprocess.PIPE,
+#                      stderr=subprocess.PIPE)
 conn = sqlite3.connect('orders.db')
 cur = conn.cursor()
 cur.execute("""DROP table IF EXISTS users;""")

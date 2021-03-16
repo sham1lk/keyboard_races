@@ -1,15 +1,16 @@
 import sqlite3
-import string
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import *
+from PyQt5 import QtCore
 from PyQt5.QtCore import *
 
 import sys
 import random
+
+from helpers import (get_game, string_to_time, get_players, get_progres,
+                     sample_text)
 from tasks import send_progress, app, pregame_communication
 from ui import NAME, GAME_NAME
 
@@ -17,52 +18,17 @@ conn = sqlite3.connect('orders.db')
 cur = conn.cursor()
 
 
-def get_progres(name):
-    try:
-        cur.execute("SELECT progres FROM users where name=?", (name,))
-        return int(cur.fetchall()[0][0])
-    except:
-        return 0
-
-def get_players(name):
-    cur.execute("SELECT room FROM users where name=?", (name,))
-    game = cur.fetchall()
-    if game:
-        cur.execute("SELECT name FROM users where room=? order by name", (game[0][0],))
-    return cur.fetchall()
-
-def get_game(name):
-    cur.execute("SELECT room FROM users where name=?", (name,))
-    game = cur.fetchall()
-    if game:
-        cur.execute("SELECT * FROM game where name=?", (game[0][0],))
-        return cur.fetchall()
-    else:
-        return False
-
-def string_to_time(str):
-    return datetime.strptime(str, '%Y-%m-%d %H:%M:%S.%f')
-
 class TrainingWin(QWidget):
     # constructor
 
     def __init__(self, training=True, creator=False):
         super().__init__()
-        self.sample_text = []
+        self.sample_text = sample_text
         self.reseted = 1
-        self.pbar = 0
+        self.pbar = []
         self.playerAmount = 0
-        self.sample_text.append(
-            "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other")
-        self.sample_text.append(
-            "When and where, it matters not now to\nrelate--but once upon a time as I was\npassing through a thinly peopled district\nof country, night came down upon me, almost unawares.")
-        self.sample_text.append(
-            "Some women had risen, in order to get\nnearer to him, and were standing with their\neyes fastened on the clean-shaven face\nof the judge, who was saying such weighty things")
-        self.sample_text.append(
-            "Conradin hated her with a desperate sincerity\nwhich he was perfectly able to mask.")
-        self.sample_text.append(
-            "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bush")
-        self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
+        self.game_text = self.sample_text[
+            random.randint(0, len(self.sample_text) - 1)]
         self.game_name = GAME_NAME
         self.start_time = datetime.utcnow()
         self.creator = creator
@@ -89,7 +55,6 @@ class TrainingWin(QWidget):
             self.restart.clicked.connect(self.startBtn)
         self.reset()
 
-
     def reset(self):
         self.idx = random.randint(0, len(self.sample_text) - 1)
         self.stxtLen = len(self.sample_text[self.idx])
@@ -111,7 +76,6 @@ class TrainingWin(QWidget):
         self.cwPtr = 0
 
         self.training_ui()
-        
 
     def training_ui(self):
         self.sampleTxt.setObjectName("sample_text")
@@ -152,11 +116,10 @@ class TrainingWin(QWidget):
             print(get_players(NAME))
 
         if self.training:
-            conn = sqlite3.connect('orders.db')
-            cur = conn.cursor()
             cur.execute(
-            """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (NAME,
-                                                                0, GAME_NAME))
+                """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""",
+                (NAME,
+                 0, GAME_NAME))
             conn.commit()
             if self.reseted:
                 self.playerAmount = len(get_players(NAME))
@@ -181,13 +144,13 @@ class TrainingWin(QWidget):
         qlw = 140
         qlh = 25
         w2 = int(stx + (w1 - qlw) / 2)
-        
+
         self.qle.clear()
         self.qle.setGeometry(w2, sty + h1 + 25, qlw, qlh + 5)
         self.qle.textChanged[str].connect(self.onChanged)
 
         lbly = sty + h1 + 30
-        
+
         self.lbl.setObjectName("lbll")
         self.lbl.setText("0")
         self.lbl.setGeometry(w2 + qlw + 20, lbly, 30, qlh)
@@ -195,8 +158,6 @@ class TrainingWin(QWidget):
         pbrW = 500
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
-
-        
 
         if not self.creator:
             for i in range(self.playerAmount):
@@ -216,31 +177,32 @@ class TrainingWin(QWidget):
 
                 pbry += 50
 
-
-
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.time)
         self.timer.start(1000)
 
         self.show()
 
-
     def time(self):
         self.playerAmount = len(get_players(NAME))
+        print(get_players(NAME))
         for i in range(self.playerAmount):
-            self.pbar[i].setValue(get_progres(get_players(NAME)[i][0]))
-            self.plbl[i].setText(get_players(NAME)[i][0] + ": "+ str(get_progres(get_players(NAME)[i][0])) + "%")
-            self.plbl[i].adjustSize()
+            if not self.creator:
+                progress = get_progres(get_players(NAME)[i][0])
+                self.pbar[i].setValue(progress)
+                self.plbl[i].setText(get_players(NAME)[i][0] + ": " + str(
+                    progress) + "%")
+                self.plbl[i].adjustSize()
 
-            if self.started and self.finished[i]==0:
+            if self.started and self.finished[i] == 0:
                 if self.pbar[i].value() > 99:
                     self.end_time = time.perf_counter()
-                    pace = 60 * ((self.stxtLen - self.stxtSpace) / (self.end_time - self.start_time))
+                    pace = 60 * ((self.stxtLen - self.stxtSpace) / (
+                                self.end_time - self.start_time))
                     pace = str(round(pace, 2))
-                    self.pacelbl[i].setText(pace + " sym/min") 
+                    self.pacelbl[i].setText(pace + " sym/min")
                     self.pacelbl[i].adjustSize()
                     self.finished[i] = 1
-
 
     def onChanged(self, text):
         if not self.started:
@@ -258,7 +220,8 @@ class TrainingWin(QWidget):
                 self.cwPtr += len(self.splitted[self.correct_words]) + 1
                 self.correct_words += 1
 
-                prcnt = int((self.correct_words / float(len(self.splitted))) * 100)
+                prcnt = int(
+                    (self.correct_words / float(len(self.splitted))) * 100)
                 send_progress.apply_async([NAME, self.game_name, prcnt])
 
                 # self.pbar.setValue(get_progres(NAME))
@@ -272,7 +235,7 @@ class TrainingWin(QWidget):
 
             if self.correct_words == len(self.splitted):
                 self.lbl.setText("Congratulations you are {}".format(
-                        sum(self.finished)+1))
+                    sum(self.finished) + 1))
                 self.lbl.adjustSize()
                 # self.end_time = time.perf_counter()s
 
@@ -283,14 +246,13 @@ class TrainingWin(QWidget):
                 # self.pacelbl.setText(pace + " sym/min") 
                 # self.pacelbl.adjustSize()
 
-
     def restartBtn(self):
         print("restart")
         self.reset()
 
     def startBtn(self):
         pregame_communication.apply_async(
-                    [self.game_name, self.game_text, self.start_time])
+            [self.game_name, self.game_text, self.start_time])
         send_progress.apply_async([NAME, self.game_name, 0])
         time.sleep(1)
         self.qle.setDisabled(False)

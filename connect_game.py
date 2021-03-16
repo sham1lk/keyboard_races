@@ -1,9 +1,7 @@
 import sqlite3
-from datetime import datetime, timedelta
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLineEdit, QPushButton, QLabel
-from PyQt5.uic.properties import QtGui, QtCore
 
 from tasks import send_progress
 from trainingWin import TrainingWin

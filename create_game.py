@@ -3,19 +3,11 @@ import sqlite3
 from datetime import datetime, timedelta
 
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, \
-    QHBoxLayout, QFormLayout, QGridLayout
+from PyQt5.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton
 
+from helpers import sample_text
 from trainingWin import TrainingWin
 from ui import NAME
-
-sample_text = [
-    "In some natures there are no half-tones;\nnothing but raw primary colours. John Bodman\nwas a man who was always at one extreme or the other",
-    "When and where, it matters not now to\nrelate--but once upon a time as I was\npassing through a thinly peopled district\nof country, night came down upon me, almost unawares.",
-    "Some women had risen, in order to get\nnearer to him, and were standing with their\neyes fastened on the clean-shaven face\nof the judge, who was saying such weighty things",
-    "Conradin hated her with a desperate sincerity\nwhich he was perfectly able to mask.",
-    "The man held a double-barrelled gun cocked in his\nhand, and screwed up his eyes in the direction\nof his lean old dog who was running on ahead sniffing the bushes"
-]
 
 
 class CreateGame(QWidget):
