@@ -67,7 +67,7 @@ class CreateGame(QWidget):
             random.randint(0, len(sample_text)-1)]
         cur.execute(
             """INSERT INTO game (name, text, time) VALUES(?, ?, ?);""",
-            (self.qle.text(), text, datetime.utcnow() + timedelta(0, 60)))
+            (self.qle.text(), text, datetime.utcnow() + timedelta(0, 10)))
         conn.commit()
 
         cur.execute(
