@@ -28,25 +28,22 @@ class CreateGame(QWidget):
         self.setWindowTitle("New Game")
 
         room_name = QLabel(self)
-        room_name.setGeometry(20, 100, 120, 30)
+        room_name.setGeometry(275, 220, 100, 30)
         room_name.setText("Room Name: ")
 
-        create_game = QPushButton("Start game", self)
-        create_game.setGeometry(20, 380, 200, 50)
-        create_game.clicked.connect(self.create)
-        create_game.setFont(QFont('Times', 15))
-
         self.qle = QLineEdit(self)
-        self.qle.move(150, 100)
+        self.qle.setGeometry(375, 220 ,150, 30)
         self.qle.textChanged[str].connect(self.onChanged)
 
-        room_text = QLabel(self)
-        room_text.setGeometry(280, 100, 120, 30)
-        room_text.setText("Text to play:")
-
         self.text = QLineEdit(self)
-        self.text.setGeometry(400, 100, 350, 350)
+        self.text.setGeometry(100, 275, 600, 50)
+        self.text.setPlaceholderText("Here you can type your custom text or random text will be chosen")
         self.text.textChanged[str].connect(self.onChanged)
+
+        create_game = QPushButton("Start game", self)
+        create_game.setGeometry(300, 370, 200, 50)
+        create_game.clicked.connect(self.create)
+        create_game.setFont(QFont('Times', 15))
 
         self.show()
 
