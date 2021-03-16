@@ -55,27 +55,14 @@ class TrainingWin(QWidget):
         self.game_text = self.sample_text[random.randint(0, len(self.sample_text) - 1)]
         self.game_name = 'training'
         self.start_time = datetime.utcnow()
+        self.creator = creator
+        self.training = training
         if creator:
             game = get_game(NAME)
             game = game[0]
             self.game_name = game[0]
             self.game_text = game[1]
             self.start_time = string_to_time(game[2])
-            k = 0
-            while k<10:
-                print(self.start_time, datetime.utcnow() - timedelta(0, 5))
-                pregame_communication.apply_async(
-                    [self.game_name, self.game_text, self.start_time])
-                k+=1
-                time.sleep(1)
-        elif not training:
-            game = get_game(NAME)
-            while not game:
-                time.sleep(1)
-            game = game[0]
-            self.game_name = game[0]
-            self.game_text = game[1]
-            self.start_time = game[2]
 
         self.sampleTxt = QLabel(self)
         self.qle = QLineEdit(self)
@@ -93,7 +80,10 @@ class TrainingWin(QWidget):
             self.restart = QPushButton("Restart", self)
             self.restart.setGeometry(550, 20, 200, 50)
             self.restart.clicked.connect(self.restartBtn)
-
+        if creator:
+            self.restart = QPushButton("Start", self)
+            self.restart.setGeometry(550, 20, 200, 50)
+            self.restart.clicked.connect(self.startBtn)
         self.reset()
 
 
@@ -150,7 +140,22 @@ class TrainingWin(QWidget):
         pbrW = 500
         pbrx = (self.wgtW - pbrW) / 2
         pbry = lbly + 120
-        
+
+        if self.creator or not self.training:
+            self.qle.setDisabled(True)
+        if not self.training and not self.creator:
+            game = get_game(NAME)
+            while not game:
+                game = get_game(NAME)
+                time.sleep(1)
+            game = game[0]
+            self.game_name = game[0]
+            self.game_text = game[1]
+            self.start_time = game[2]
+            self.sampleTxt.setText(self.game_text)
+            self.sampleTxt.adjustSize()
+            self.qle.setDisabled(False)
+
 
         for i in range(self.playerAmount):
             self.pbar[i].setTextVisible(False);
@@ -230,7 +235,11 @@ class TrainingWin(QWidget):
         print("restart")
         self.reset()
 
-
+    def startBtn(self):
+        pregame_communication.apply_async(
+                    [self.game_name, self.game_text, self.start_time])
+        self.qle.setDisabled(False)
+        self.restart.setHidden(True)
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)
