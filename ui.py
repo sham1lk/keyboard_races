@@ -7,12 +7,13 @@ from PyQt5.QtCore import *
 
 import sys
 
-from helpers import get_ip, get_name
-NAME = get_name().replace('-','_')
 # create a Window class
-from connect_game import ConnectGame
-from create_game import CreateGame
+from helpers import get_ip, get_name
+from tasks import celery_get_name
+NAME = get_name().replace('-','p')
 from trainingWin import TrainingWin
+
+training_window = None
 
 
 class Window(QMainWindow):
@@ -28,25 +29,24 @@ class Window(QMainWindow):
         create_game = QPushButton("Create game", self)
         create_game.setGeometry(20, 380, 200, 50)
         create_game.clicked.connect(self.create_game)
-        create_game.setFont(QFont('Times', 15))
 
         connect_to_game = QPushButton("Connect to the game", self)
         connect_to_game.setGeometry(285, 380, 200, 50)
         connect_to_game.clicked.connect(self.connect_to_game)
-        connect_to_game.setFont(QFont('Times', 15))
 
         training = QPushButton("Training", self)
         training.setGeometry(550, 380, 200, 50)
         training.clicked.connect(self.trainingBtn)
-        training.setFont(QFont('Times', 15))
 
         self.label = QLabel(self)
+        self.label.setObjectName("label")
         self.label.setGeometry(20, 240, 260, 60)
         self.label.setFont(QFont('Times', 15))
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setText("Your IP address: {}".format(get_ip()))
 
         nickname = QLabel(self)
+        nickname.setObjectName("nickname")
         nickname.setGeometry(20, 100, 120, 30)
         nickname.setText("Your nickname: ")
 
@@ -55,23 +55,24 @@ class Window(QMainWindow):
         self.text_edit.setGeometry(140, 100, 140, 30)
         self.layout().addWidget(self.text_edit)
 
-        pixmap = QPixmap('statics/image.jpg').scaled(400, 500,
-                                                     QtCore.Qt.KeepAspectRatio)
+        pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
 
         label = QLabel(self)
         label.setPixmap(pixmap)
         label.setGeometry(400, 100, 350, 200)
-        # self.layout().addWidget(label)
+        
+        picLabel = QLabel(self)
+        picLabel.setObjectName("image")
+        picLabel.setPixmap(pixmap)
+        picLabel.setGeometry(400, 100, 350, 200)
+
         self.show()
 
     def create_game(self):
-        # self.nickname = self.text_edit.toPlainText()
         self.label.setText("Create game")
-        self.w = CreateGame()
 
     def connect_to_game(self):
         self.label.setText("Connect game")
-        self.w=ConnectGame()
 
     def trainingBtn(self):
         self.label.setText("Training")
@@ -80,8 +81,6 @@ class Window(QMainWindow):
     def hide_menu(self):
         pass
 
-
-# create pyqt5 app
 
 def start_app():
     # create the instance of our Window
@@ -154,3 +153,4 @@ def start_app():
 
     window = Window()
     App.exec()
+

@@ -15,6 +15,14 @@ app.conf.broker_url = "amqp://xekacxtl:c2GI0ApaiIIgnVuSumk3ZogdsEUAkedK@jellyfis
 app.conf.task_default_queue = 'broadcast_tasks'
 app.conf.task_queues = (Broadcast('broadcast_tasks'),)
 
+@app.task()
+def add():
+    return "123"
+
+
+@app.task()
+def celery_get_name():
+    return 'hi'
 
 @app.task()
 def send_progress(name, progres, room):
