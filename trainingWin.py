@@ -49,6 +49,7 @@ class TrainingWin(QWidget):
     def __init__(self, training=True, creator=False):
         super().__init__()
         self.sample_text = []
+        self.reseted = 1
         self.pbar = 0
         self.playerAmount = 0
         self.sample_text.append(
@@ -151,17 +152,24 @@ class TrainingWin(QWidget):
             print(get_players(NAME))
 
         if self.training:
-            self.playerAmount = len(get_players(NAME))
-
-            self.pbar = []
-            self.plbl = []
-            self.pacelbl = []
-            self.finished = []
-            for i in range(self.playerAmount):
-                self.pbar.append(QProgressBar(self))
-                self.plbl.append(QLabel(self))
-                self.pacelbl.append(QLabel(self))
-                self.finished.append(0)
+            conn = sqlite3.connect('orders.db')
+            cur = conn.cursor()
+            cur.execute(
+            """REPLACE INTO users (name, progres, room) VALUES(?, ?, ?);""", (NAME,
+                                                                0, GAME_NAME))
+            conn.commit()
+            if self.reseted:
+                self.playerAmount = len(get_players(NAME))
+                self.reseted = 0
+                self.pbar = []
+                self.plbl = []
+                self.pacelbl = []
+                self.finished = []
+                for i in range(self.playerAmount):
+                    self.pbar.append(QProgressBar(self))
+                    self.plbl.append(QLabel(self))
+                    self.pacelbl.append(QLabel(self))
+                    self.finished.append(0)
 
         self.sampleTxt.adjustSize()
         h1 = int(self.sampleTxt.height() * 1.6)
