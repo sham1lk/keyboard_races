@@ -93,6 +93,12 @@ def start_app():
             background: #f2f2f2;
         }
 
+        QLabel{
+            font-family: Arial, Helvetica, sans-serif;
+            color: #242424;
+            font-size: 15px;
+        }
+
         QLabel#progress_label, #pace_label, #lbll{
             font-family: Arial, Helvetica, sans-serif;
             color: #242424;
