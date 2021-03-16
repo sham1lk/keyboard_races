@@ -71,10 +71,11 @@ class Window(QMainWindow):
 
     def create_game(self):
         self.label.setText("Create game")
-        self.w = ConnectGame()
+        self.w = CreateGame()
+
     def connect_to_game(self):
         self.label.setText("Connect game")
-        self.w = CreateGame()
+        self.w = ConnectGame()
 
     def trainingBtn(self):
         self.label.setText("Training")
