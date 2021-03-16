@@ -39,46 +39,43 @@ class Window(QMainWindow):
         training.setGeometry(550, 380, 200, 50)
         training.clicked.connect(self.trainingBtn)
 
-        self.label = QLabel(self)
-        self.label.setObjectName("label")
-        self.label.setGeometry(20, 240, 260, 60)
-        self.label.setFont(QFont('Times', 15))
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setText("Your IP address: {}".format(get_ip()))
+        # self.label = QLabel(self)
+        # self.label.setObjectName("label")
+        # self.label.setGeometry(20, 240, 260, 60)
+        # self.label.setFont(QFont('Times', 15))
+        # self.label.setAlignment(Qt.AlignCenter)
+        # self.label.setText("Your IP address: {}".format(get_ip()))
 
         nickname = QLabel(self)
         nickname.setObjectName("nickname")
-        nickname.setGeometry(20, 100, 120, 30)
+        nickname.setGeometry(250, 300, 120, 30)
         nickname.setText("Your nickname: ")
 
         self.text_edit = QLineEdit()
         self.text_edit.setText(NAME)
-        self.text_edit.setGeometry(140, 100, 140, 30)
+        self.text_edit.setGeometry(370, 300, 180, 30)
         self.layout().addWidget(self.text_edit)
 
         pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
 
-        label = QLabel(self)
-        label.setPixmap(pixmap)
-        label.setGeometry(400, 100, 350, 200)
+        # label = QLabel(self)
+        # label.setPixmap(pixmap)
+        # label.setGeometry(225, 50, 350, 200)
         
         picLabel = QLabel(self)
         picLabel.setObjectName("image")
         picLabel.setPixmap(pixmap)
-        picLabel.setGeometry(400, 100, 350, 200)
+        picLabel.setGeometry(225, 50, 350, 200)
 
         self.show()
 
     def create_game(self):
-        self.label.setText("Create game")
         self.w = CreateGame()
 
     def connect_to_game(self):
-        self.label.setText("Connect game")
         self.w = ConnectGame()
 
     def trainingBtn(self):
-        self.label.setText("Training")
         self.w = TrainingWin()
 
     def hide_menu(self):
@@ -115,7 +112,7 @@ def start_app():
             border-radius: 10px;
         }
 
-        QLabel#label, #nickname, #image{
+        QLabel#label, #image{
             font-family: Arial, Helvetica, sans-serif;
             color: #242424;
             padding: 5px;

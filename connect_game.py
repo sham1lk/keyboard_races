@@ -20,16 +20,17 @@ class ConnectGame(QWidget):
         self.setWindowTitle("New Game")
 
         room_name = QLabel(self)
-        room_name.setGeometry(20, 100, 120, 30)
+        room_name.setGeometry(275, 250, 100, 30)
         room_name.setText("Room Name: ")
 
         self.create_game = QPushButton("Connect game", self)
-        self.create_game.setGeometry(20, 380, 200, 50)
+        self.create_game.setGeometry(300, 350, 200, 50)
         self.create_game.clicked.connect(self.connect)
         self.create_game.setFont(QFont('Times', 15))
 
         self.qle = QLineEdit(self)
-        self.qle.move(150, 100)
+        # self.qle.move(150, 100)
+        self.qle.setGeometry(375, 250, 150, 30)
         self.qle.textChanged[str].connect(self.onChanged)
         self.show()
 
