@@ -58,6 +58,7 @@ class Window(QMainWindow):
         self.text_edit = QLineEdit()
         self.text_edit.setText(NAME)
         self.text_edit.setGeometry(370, 300, 180, 30)
+        self.text_edit.setDisabled(True)
         self.layout().addWidget(self.text_edit)
 
         pixmap = QPixmap('statics/image.jpg').scaled(400, 500, QtCore.Qt.KeepAspectRatio)
